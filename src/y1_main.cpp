@@ -1,106 +1,263 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <unordered_set>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-// Sử dụng kiểu dữ liệu 64-bit nguyên không dấu
-typedef unsigned long long uint64;
+using ull = unsigned long long;
 
-// Hàm chuyển chuỗi nhị phân (VD: "1101") thành số nguyên 64-bit
-uint64 stringToBin(const string& s) {
-    uint64 val = 0;
-    for (size_t i = 0; i < s.length(); ++i) {
-        if (s[i] == '1') {
-            val |= (1ULL << (s.length() - 1 - i));
-        }
+ull stringToBin(const string& s) {
+    ull val = 0;
+    for (char c : s) {
+        val <<= 1;
+        if (c == '1') val |= 1ULL;
     }
     return val;
 }
 
-// Hàm dịch vòng phải 1 bit trong phạm vi l bit
-uint64 cyclicShiftRight(uint64 val, int l) {
-    uint64 last_bit = val & 1ULL;
-    return (last_bit << (l - 1)) | (val >> 1);
+string binToString(ull x, int n) {
+    string s(n, '0');
+    for (int i = n - 1; i >= 0; --i) {
+        s[i] = char('0' + (x & 1ULL));
+        x >>= 1;
+    }
+    return s;
+}
+
+ull cyclicShiftRight(ull val, int n) {
+    if (n == 64) {
+        ull last = val & 1ULL;
+        return (val >> 1) | (last << 63);
+    }
+
+    ull mask = (1ULL << n) - 1;
+    ull last = val & 1ULL;
+
+    return ((val >> 1) | (last << (n - 1))) & mask;
+}
+
+bool isPowerOfTwo(size_t x) {
+    return x > 0 && (x & (x - 1)) == 0;
+}
+
+int calcK(size_t m) {
+    int k = 0;
+    while ((1ULL << k) < m) ++k;
+    return k;
+}
+
+struct Result {
+    bool validInput = true;
+    bool validSize = false;
+    bool hasZero = false;
+    bool linear = false;
+    bool cyclic = false;
+
+    string reason;
+
+    ull failA = 0;
+    ull failB = 0;
+    ull failXor = 0;
+
+    ull failCode = 0;
+    ull failShift = 0;
+};
+
+Result solveOne(int n, int m, const vector<string>& inputCodes, vector<ull>& codes) {
+    Result res;
+
+    unordered_set<ull> codebook;
+    codes.clear();
+
+    for (int i = 0; i < m; ++i) {
+        string s = inputCodes[i];
+
+        if ((int)s.size() != n) {
+            res.validInput = false;
+            res.reason = "Tu ma thu " + to_string(i + 1) + " co do dai khong bang n.";
+            return res;
+        }
+
+        for (char c : s) {
+            if (c != '0' && c != '1') {
+                res.validInput = false;
+                res.reason = "Tu ma thu " + to_string(i + 1) + " chua ky tu khong hop le.";
+                return res;
+            }
+        }
+
+        ull val = stringToBin(s);
+
+        if (codebook.count(val)) {
+            res.validInput = false;
+            res.reason = "Tap ma co tu ma bi trung lap.";
+            return res;
+        }
+
+        codebook.insert(val);
+        codes.push_back(val);
+    }
+
+    res.validSize = isPowerOfTwo(codebook.size());
+
+    if (!res.validSize) {
+        res.reason = "Kich thuoc tap ma khong phu hop (khong phai 2^k).";
+        return res;
+    }
+
+    res.hasZero = codebook.count(0ULL);
+
+    if (!res.hasZero) {
+        res.reason = "Tap ma khong chua tu ma khong.";
+        return res;
+    }
+
+    res.linear = true;
+
+    for (ull a : codes) {
+        for (ull b : codes) {
+            ull c = a ^ b;
+            if (!codebook.count(c)) {
+                res.linear = false;
+                res.failA = a;
+                res.failB = b;
+                res.failXor = c;
+                res.reason = "Tap ma khong dong voi phep XOR.";
+                return res;
+            }
+        }
+    }
+
+    res.cyclic = true;
+
+    for (ull x : codes) {
+        ull y = cyclicShiftRight(x, n);
+        if (!codebook.count(y)) {
+            res.cyclic = false;
+            res.failCode = x;
+            res.failShift = y;
+            res.reason = "Tap ma khong dong voi phep dich vong.";
+            return res;
+        }
+    }
+
+    return res;
+}
+
+void printShort(const Result& res) {
+    if (res.validInput && res.validSize && res.hasZero && res.linear && res.cyclic) {
+        cout << "YES\n";
+    } else {
+        cout << "NO\n";
+    }
+}
+
+void printFull(int tc, int n, int m, const vector<string>& inputCodes, const vector<ull>& codes, const Result& res) {
+    cout << "========== TEST CASE " << tc << " ==========\n";
+
+    cout << "\nTap ma C gom " << m << " tu ma do dai n = " << n << ":\n";
+    for (const string& s : inputCodes) {
+        cout << s << '\n';
+    }
+
+    if (!res.validInput) {
+        cout << "\nKet luan: KHONG PHAI ma vong tuyen tinh.\n";
+        cout << "Ly do: " << res.reason << '\n';
+        return;
+    }
+
+    cout << "\n1. Kiem tra kich thuoc tap ma\n";
+    cout << "Ta co |C| = " << codes.size() << ".\n";
+
+    if (res.validSize) {
+        int k = calcK(codes.size());
+        cout << "Vi |C| = 2^" << k << ", kich thuoc tap ma hop le.\n";
+    } else {
+        cout << "Vi |C| khong co dang 2^k, C khong the la ma tuyen tinh nhi phan.\n";
+        cout << "\nKet luan: KHONG PHAI ma vong tuyen tinh.\n";
+        return;
+    }
+
+    cout << "\n2. Kiem tra tu ma khong\n";
+
+    if (res.hasZero) {
+        cout << "Tap C co chua tu ma khong: " << binToString(0ULL, n) << ".\n";
+    } else {
+        cout << "Tap C khong chua tu ma khong " << binToString(0ULL, n) << ".\n";
+        cout << "\nKet luan: KHONG PHAI ma vong tuyen tinh.\n";
+        return;
+    }
+
+    cout << "\n3. Kiem tra tinh tuyen tinh\n";
+    cout << "Voi ma nhi phan, C la ma tuyen tinh neu C dong voi phep XOR.\n";
+
+    if (res.linear) {
+        cout << "Moi cap a, b thuoc C deu co a XOR b thuoc C.\n";
+        cout << "Suy ra C la ma khoi tuyen tinh.\n";
+    } else {
+        cout << "Ton tai a, b thuoc C sao cho a XOR b khong thuoc C.\n";
+        cout << "Cu the:\n";
+        cout << "a       = " << binToString(res.failA, n) << '\n';
+        cout << "b       = " << binToString(res.failB, n) << '\n';
+        cout << "a XOR b = " << binToString(res.failXor, n) << " khong thuoc C.\n";
+        cout << "\nKet luan: KHONG PHAI ma vong tuyen tinh.\n";
+        return;
+    }
+
+    cout << "\n4. Kiem tra tinh xoay vong\n";
+    cout << "C la ma vong neu moi tu ma sau khi dich vong phai 1 bit van thuoc C.\n";
+
+    if (res.cyclic) {
+        cout << "Moi tu ma c thuoc C sau khi dich vong phai van thuoc C.\n";
+        cout << "\nKet luan: BO MA LA MA VONG TUYEN TINH.\n";
+    } else {
+        cout << "Ton tai c thuoc C sao cho dich vong phai cua c khong thuoc C.\n";
+        cout << "Cu the:\n";
+        cout << "c              = " << binToString(res.failCode, n) << '\n';
+        cout << "Dich vong phai = " << binToString(res.failShift, n) << " khong thuoc C.\n";
+        cout << "\nKet luan: LA MA TUYEN TINH NHUNG KHONG PHAI MA VONG.\n";
+    }
 }
 
 int main() {
-    // THAM SỐ CẤU HÌNH (Thỏa mãn l <= 64, k <= 20)
-    int l = 7; // Độ dài từ mã (n)
-    vector<string> input_codes = {
-        "0000000", "1010101", "0101010", "1111111" // Ví dụ bộ mã (7, 2)
-    };
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    // 1. Nạp dữ liệu vào unordered_set để tìm kiếm nhanh O(1)
-    unordered_set<uint64> codebook;
-    uint64 g = 0;
-    int min_weight = 999;
+    // Kích hoạt đọc file test1.in và ghi file test1.out
+    if (freopen("tests/y1/test1.in", "r", stdin) == nullptr) {
+        cerr << "Khong the mo file test1.in!\n";
+        return 1;
+    }
+    if (freopen("tests/y1/test1.out", "w", stdout) == nullptr) {
+        cerr << "Khong the tao file test1.out!\n";
+        return 1;
+    }
 
-    for (const string& s : input_codes) {
-        uint64 val = stringToBin(s);
-        codebook.insert(val);
+    int T;
+    if (!(cin >> T)) return 0;
 
-        // Tìm từ mã có trọng số Hamming nhỏ nhất (khác 0) làm phần tử sinh g
-        int weight = __builtin_popcountll(val); // Hàm đếm số bit 1 tốc độ cao của C++
-        if (val != 0 && weight < min_weight) {
-            min_weight = weight;
-            g = val;
+    for (int tc = 1; tc <= T; ++tc) {
+        int mode;
+        int n, m;
+
+        cin >> mode;
+        cin >> n >> m;
+
+        vector<string> inputCodes(m);
+        for (int i = 0; i < m; ++i) {
+            cin >> inputCodes[i];
         }
-    }
 
-    // Tự động tính k dựa trên kích thước tập mã (M = 2^k)
-    size_t M = codebook.size();
-    int k = 0;
-    while ((1ULL << k) < M) k++;
+        vector<ull> codes;
+        Result res = solveOne(n, m, inputCodes, codes);
 
-    // Kiểm tra tính hợp lệ của số lượng từ mã
-    if ((1ULL << k) != M) {
-        cout << "Ket luan: Khong phai ma tuyen tinh (Kich thuoc tap ma khong phai dang 2^k)." << endl;
-        return 0;
-    }
-
-    cout << "--- HE THONG DANG KIEM TRA MA (" << l << ", " << k << ") ---" << endl;
-
-    // BƯỚC 1: KIỂM TRA MÃ KHỐI TUYẾN TÍNH (Sinh tập mã từ Ma trận G)
-    vector<uint64> G(k);
-    for (int i = 0; i < k; ++i) {
-        G[i] = g >> i; // Tạo ma trận sinh bằng cách dịch đại số của g
-    }
-
-    bool is_linear = true;
-    for (size_t i = 0; i < M; ++i) {
-        uint64 codeword = 0;
-        for (int j = 0; j < k; ++j) {
-            if ((i >> j) & 1ULL) {
-                codeword ^= G[j]; // Phép cộng trên trường GF(2)
-            }
+        if (mode == 1) {
+            cout << "Test case " << tc << ": ";
+            printShort(res);
+        } else {
+            printFull(tc, n, m, inputCodes, codes, res);
         }
-        // Kiểm tra xem từ mã vừa tạo ra có nằm trong tập ban đầu không
-        if (codebook.find(codeword) == codebook.end()) {
-            is_linear = false;
-            break;
+
+        if (tc != T) {
+            cout << "\n----------------------------------------\n\n";
         }
-    }
-
-    if (!is_linear) {
-        cout << "Ket luan: KHONG PHAI ma khoi tuyen tinh (That bai o B1)." << endl;
-        return 0;
-    }
-    cout << "[OK] Buoc 1: Bo ma dat tinh chat TUYEN TINH." << endl;
-
-    // BƯỚC 2: KIỂM TRA TÍNH XOAY VÒNG (MÃ VÒNG)
-    // Lấy hàng cuối cùng của ma trận G, dịch vòng phải 1 bit
-    uint64 last_row = G[k - 1];
-    uint64 shifted_code = cyclicShiftRight(last_row, l);
-
-    // Nếu từ mã dịch vòng này tồn tại trong tập ban đầu -> Bộ mã là mã vòng
-    if (codebook.find(shifted_code) != codebook.end()) {
-        cout << "[OK] Buoc 2: Thoa man dieu kien dich vong." << endl;
-        cout << "\n==> KET LUAN CUOI CUNG: BO MA LA MA VONG TUYEN TINH!" << endl;
-    } else {
-        cout << "Ket luan: La ma khoi tuyen tinh nhung KHONG PHAI ma vong (That bai o B2)." << endl;
     }
 
     return 0;
