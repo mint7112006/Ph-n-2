@@ -1,0 +1,22 @@
+Test case 1: YES
+
+----------------------------------------
+
+Test case 2: NO
+
+----------------------------------------
+
+========== TEST CASE 3 ==========
+
+Tap ma C gom 2 tu ma do dai n = 3:
+001
+111
+
+1. Kiem tra kich thuoc tap ma
+Ta co |C| = 2.
+Vi |C| = 2^1, kich thuoc tap ma hop le.
+
+2. Kiem tra tu ma khong
+Tap C khong chua tu ma khong 000.
+
+Ket luan: KHONG PHAI ma vong tuyen tinh.

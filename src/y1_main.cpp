@@ -221,12 +221,12 @@ int main() {
     cin.tie(nullptr);
 
     // Kích hoạt đọc file test.in và ghi file test.out
-    if (freopen("../tests/y1/test1.in", "r", stdin) == nullptr) {
-        cerr << "Khong the mo file test.in!\n";
+    if (freopen("../tests/y1/test2.in", "r", stdin) == nullptr) {
+        cerr << "Khong the mo file test2.in!\n";
         return 1;
     }
-    if (freopen("../tests/y1/test1.out", "w", stdout) == nullptr) {
-        cerr << "Khong the tao file test.out!\n";
+    if (freopen("../tests/y1/test2.out", "w", stdout) == nullptr) {
+        cerr << "Khong the tao file test2.out!\n";
         return 1;
     }
 
