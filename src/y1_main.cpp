@@ -220,13 +220,13 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    // Kích hoạt đọc file test1.in và ghi file test1.out
-    if (freopen("tests/y1/test1.in", "r", stdin) == nullptr) {
-        cerr << "Khong the mo file test1.in!\n";
+    // Kích hoạt đọc file test.in và ghi file test.out
+    if (freopen("../tests/y1/test1.in", "r", stdin) == nullptr) {
+        cerr << "Khong the mo file test.in!\n";
         return 1;
     }
-    if (freopen("tests/y1/test1.out", "w", stdout) == nullptr) {
-        cerr << "Khong the tao file test1.out!\n";
+    if (freopen("../tests/y1/test1.out", "w", stdout) == nullptr) {
+        cerr << "Khong the tao file test.out!\n";
         return 1;
     }
 
