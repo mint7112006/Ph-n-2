@@ -1,0 +1,23 @@
+========== TEST CASE 1 ==========
+
+Tap ma C gom 2 tu ma do dai n = 3:
+000
+111
+
+1. Kiem tra kich thuoc tap ma
+Ta co |C| = 2.
+Vi |C| = 2^1, kich thuoc tap ma hop le.
+
+2. Kiem tra tu ma khong
+Tap C co chua tu ma khong: 000.
+
+3. Kiem tra tinh tuyen tinh
+Voi ma nhi phan, C la ma tuyen tinh neu C dong voi phep XOR.
+Moi cap a, b thuoc C deu co a XOR b thuoc C.
+Suy ra C la ma khoi tuyen tinh.
+
+4. Kiem tra tinh xoay vong
+C la ma vong neu moi tu ma sau khi dich vong phai 1 bit van thuoc C.
+Moi tu ma c thuoc C sau khi dich vong phai van thuoc C.
+
+Ket luan: BO MA LA MA VONG TUYEN TINH.
