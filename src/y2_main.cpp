@@ -10,12 +10,12 @@ using namespace std;
 int main() {
     // ===== KÍCH HOẠT ĐỌC/GHI FILE =====
     // Lưu ý: Dấu ../ để lùi ra khỏi thư mục src nếu bạn đang chạy từ đó
-    if (freopen("../tests/y2/test2.in", "r", stdin) == nullptr) {
-        cerr << "Khong the mo file test2.in!" << endl;
+    if (freopen("../tests/y2/test3.in", "r", stdin) == nullptr) {
+        cerr << "Khong the mo file test3.in!" << endl;
         return 1;
     }
-    if (freopen("../tests/y2/test2.out", "w", stdout) == nullptr) {
-        cerr << "Khong the tao file test2.out!" << endl;
+    if (freopen("../tests/y2/test3.out", "w", stdout) == nullptr) {
+        cerr << "Khong the tao file test3.out!" << endl;
         return 1;
     }
 
