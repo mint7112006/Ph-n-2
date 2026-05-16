@@ -1,8 +1,8 @@
 # Ph-n-2
 Bài tập lớn Phần 2 - Mã nguồn C/C++ và bộ dữ liệu kiểm thử ICPC
 MÃ VÒNG TUYẾN TÍNH VÀ GIẢI MÃ NGƯỠNG 
-Dự án này bao gồm hai chương trình chính nhằm giải quyết các yêu cầu về kiểm tra tính chất hệ thống mã và mô phỏng thuật toán giải mã thực tế. \\
-PHẦN 1: KIỂM TRA MÃ VÒNG TUYẾN TÍNH (CYCLIC CODE CHECKER)
+Dự án này bao gồm hai chương trình chính nhằm giải quyết các yêu cầu về kiểm tra tính chất hệ thống mã và mô phỏng thuật toán giải mã thực tế. 
+# PHẦN 1: KIỂM TRA MÃ VÒNG TUYẾN TÍNH (CYCLIC CODE CHECKER)
 1. Giới thiệu
 Chương trình này xác định xem một tập hợp các từ mã cho trước có tạo thành một Mã vòng tuyến tính hay không. Chương trình thực hiện kiểm tra qua 4 tiêu chí nghiêm ngặt của lý thuyết mã hóa.
 2. Các bước kiểm tra logic
@@ -20,8 +20,8 @@ m: Số lượng từ mã trong tập hợp.
 m dòng tiếp theo: Các chuỗi nhị phân.
 4. Cách chạy chương trình
 Sử dụng ngôn ngữ C++, trên VS code
-Kết quả sẽ được ghi vào file test2.out. \\
-PHẦN 2: GIẢI MÃ NGƯỠNG TRỰC GIAO (THRESHOLD DECODING SIMULATOR)
+Kết quả sẽ được ghi vào file test2.out. 
+# PHẦN 2: GIẢI MÃ NGƯỠNG TRỰC GIAO (THRESHOLD DECODING SIMULATOR)
 1. Giới thiệu
 Chương trình mô phỏng hoạt động của mạch giải mã ngưỡng (Threshold Decoder) sử dụng hệ phương trình kiểm tra trực giao. Đây là phương pháp giải mã tốc độ cao dựa trên logic đa số (Majority Logic).
 2. Chức năng chính
