@@ -21,3 +21,34 @@ C la ma vong neu moi tu ma sau khi dich vong phai 1 bit van thuoc C.
 Moi tu ma c thuoc C sau khi dich vong phai van thuoc C.
 
 Ket luan: BO MA LA MA VONG TUYEN TINH.
+
+----------------------------------------
+
+========== TEST CASE 2 ==========
+
+Tap ma C gom 8 tu ma do dai n = 7:
+0000000
+1011100
+0101110
+0010111
+1000011
+1101101
+0110110
+1111010
+
+1. Kiem tra kich thuoc tap ma
+Ta co |C| = 8.
+Vi |C| = 2^3, kich thuoc tap ma hop le.
+
+2. Kiem tra tu ma khong
+Tap C co chua tu ma khong: 0000000.
+
+3. Kiem tra tinh tuyen tinh
+Voi ma nhi phan, C la ma tuyen tinh neu C dong voi phep XOR.
+Ton tai a, b thuoc C sao cho a XOR b khong thuoc C.
+Cu the:
+a       = 1011100
+b       = 0101110
+a XOR b = 1110010 khong thuoc C.
+
+Ket luan: KHONG PHAI ma vong tuyen tinh.
